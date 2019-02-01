@@ -5,7 +5,9 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <ListView initialTasks={INITIAL_LIST} />
+      <div className="Container">
+       <ListView initialTasks={INITIAL_LIST} />
+      </div>
     );
   }
 }

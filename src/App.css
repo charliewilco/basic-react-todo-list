@@ -1,32 +1,124 @@
-.App {
-  text-align: center;
+:root {
+  --w: 60rem;
+  --ss: system-ui, 'Avenir Next', 'Segoe UI', 'PT Sans', sans-serif;
+  --yellow: #FFBA00;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+html {
+  box-sizing: border-box;
+  background: #092E41;
+  font: 400 100%/1.6 var(--ss);
+  color: #B3DBEE;
+  -webkit-font-smoothing: antialiased;
+}
+
+.Container {
+  margin: 12rem auto 1rem;
+  max-width: 38rem;
+}
+
+.Form {
+  width: 100%;
+}
+
+.Input {
+  padding: 8px;
+  margin-bottom: 1rem;
+  display: block;
+  border-radius: .25rem;
+  border: 1px solid rgba(30, 184, 235, 0.35);
+  resize: none;
+  width: 100%;
+  font: inherit;
+  color: white;
+  background: #063651;
+  transition: border-color 375ms ease-in-out;
+}
+
+.Tray {
+  margin-bottom: 16px;
+}
+
+.Tray > .Button {
+  display: block;
+  margin-left: auto;
+}
+
+.Button {
+  background: var(--yellow);
+  color: #092E41;
+  border: 0;
+  padding: .75rem 1rem;
+  border-radius: .5rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  appearance: none;
+  font-weight: 900;
+  transition: background-color 375ms ease-in-out;
+}
+
+.Button:hover {
+  background: #E29C00;
+}
+
+.List {
+  list-style: none inside;
+}
+
+.ListItem {
+  padding: 12px 0;
+}
+
+.ListItem:not(:last-of-type) {
+  border-bottom: 1px solid rgba(30, 184, 235, 0.35);
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+.InlineContent {
+  width: calc(100% - 18.75% - 20px);
+}
+
+.InlineActions {
+  width: 18.75%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+.InlineForm {
+  width: 100%;
+  display: flex;
+}
+
+.InlineInput {
+  flex: 1;
+  display: block;
+  padding: 2px;
+}
+
+.ActionButton {
+  padding: 4px;
+  background: none;
+  font-weight: 700;
+  border: 0;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.InlineActions > * + * {
+  margin-left: 8px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.InlineEdit {
+  margin-right: 8px;
+}
+
+.Todo {
+  display: flex;
 }
