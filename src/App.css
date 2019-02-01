@@ -21,6 +21,7 @@ html {
 
 .Container {
   margin: 12rem auto 1rem;
+  padding: 8px;
   max-width: 38rem;
 }
 
