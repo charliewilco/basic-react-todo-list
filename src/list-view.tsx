@@ -72,7 +72,11 @@ export class EditItem extends React.Component<
   render() {
     return (
       <form className="InlineForm" onSubmit={this.handleSubmit}>
-        <input className="InlineInput" value={this.state.value} onChange={this.handleChange} />
+        <input
+          className="InlineInput"
+          value={this.state.value}
+          onChange={this.handleChange}
+        />
         <button type="submit">Submit</button>
       </form>
     );
@@ -121,7 +125,10 @@ export class ListView extends React.Component<
 
   markAsComplete = (task: TodoItem) => {
     this.setState(state => {
-      const tasks = update({ ...task, completed: true }, state.tasks);
+      const tasks = update(
+        { ...task, completed: !task.completed },
+        state.tasks
+      );
       return {
         tasks
       };
@@ -154,37 +161,48 @@ export class ListView extends React.Component<
         </form>
         <ul className="List">
           {this.state.tasks.length > 0 &&
-            this.state.tasks.map(task => (
-              <li key={task.id} className="ListItem">
+            this.state.tasks.map(t => (
+              <li key={t.id} className="ListItem">
                 <Toggle>
                   {({ open, onToggle }) => (
                     <div className="Todo">
-                      <button className="ActionButton" onClick={onToggle}>Edit</button>
+                      <button
+                        className="ActionButton"
+                        disabled={t.completed}
+                        onClick={onToggle}
+                      >
+                        Edit
+                      </button>
 
                       <div className="InlineContent">
                         {open ? (
                           <EditItem
-                            item={task}
+                            item={t}
                             onUpdate={this.handleUpdate}
                             onDone={onToggle}
                           />
+                        ) : t.completed ? (
+                          <span>
+                            <b>Completed!</b>{" "}
+                            <span className="strike">{t.task}</span>
+                          </span>
                         ) : (
-                          <span>{task.task}</span>
+                          <span>{t.task}</span>
                         )}
                       </div>
 
                       <div className="InlineActions">
                         <button
                           className="ActionButton"
-                          onClick={() => this.handleRemove(task)}
+                          onClick={() => this.handleRemove(t)}
                         >
                           Delete
                         </button>
                         <button
                           className="ActionButton"
-                          onClick={() => this.markAsComplete(task)}
+                          onClick={() => this.markAsComplete(t)}
                         >
-                          Completed
+                          {t.completed ? "Undo" : "Complete"}
                         </button>
                       </div>
                     </div>
