@@ -1,9 +1,8 @@
 import * as React from "react";
 import uuid from "uuid";
-import Toggle from "./toggle";
-import { EditItem } from './edit-item'
-import { add, update, remove } from './utils'
-
+import { Toggle } from "./toggle";
+import { EditItem } from "./edit-item";
+import { add, update, remove } from "./utils";
 
 export interface TodoItem {
   completed: boolean;
@@ -24,142 +23,100 @@ export const INITIAL_LIST: TodoItem[] = [
   }
 ];
 
-type TodoList = TodoItem[];
-
-
-
 interface ListViewProps {
- initialTasks: TodoItem[] 
+  initialTasks: TodoItem[];
 }
 
-interface ListViewState {
-    tasks: TodoItem[];
-    currentValue: string;
-  }
+export const ListView: React.FC<ListViewProps> = function(props) {
+  const [tasks, setTasks] = React.useState(props.initialTasks);
+  const [value, setValue] = React.useState("");
 
-export class ListView extends React.Component<ListViewProps, ListViewState> {
-  state = {
-    tasks: this.props.initialTasks || [],
-    currentValue: ""
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
   };
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ currentValue: event.target.value });
-  };
-
-  handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    this.setState(state => {
-      const tasks = add(
-        { task: state.currentValue, id: uuid(), completed: false },
-        state.tasks
-      );
-      return {
-        tasks,
-        currentValue: ""
-      };
-    });
+    setTasks(add({ task: value, id: uuid(), completed: false }, tasks));
+
+    setValue("");
   };
 
-  handleUpdate = (task: TodoItem) => {
-    this.setState(state => {
-      const tasks = update(task, state.tasks);
-      return {
-        tasks
-      };
-    });
+  const handleRemove = (task: TodoItem) => {
+    setTasks(remove(task, tasks));
   };
 
-  markAsComplete = (task: TodoItem) => {
-    this.setState(state => {
-      const tasks = update(
-        { ...task, completed: !task.completed },
-        state.tasks
-      );
-      return {
-        tasks
-      };
-    });
+  const handleUpdate = (task: TodoItem) => {
+    setTasks(update(task, tasks));
   };
 
-  handleRemove = (task: TodoItem) => {
-    this.setState(state => {
-      const tasks = remove(task, state.tasks);
-      return {
-        tasks
-      };
-    });
+  const markAsComplete = (task: TodoItem) => {
+    setTasks(update({ ...task, completed: !task.completed }, tasks));
   };
 
-  render() {
-    return (
-      <>
-        <form className="Form" onSubmit={this.handleSubmit}>
-          <input
-            className="Input"
-            value={this.state.currentValue}
-            onChange={this.handleChange}
-          />
-          <div className="Tray">
-            <button className="Button" type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
-        <ul className="List">
-          {this.state.tasks.length > 0 &&
-            this.state.tasks.map(t => (
-              <li key={t.id} className="ListItem">
-                <Toggle>
-                  {({ open, onToggle }) => (
-                    <div className="Todo">
+  return (
+    <>
+      <form className="Form" onSubmit={handleSubmit}>
+        <input className="Input" value={value} onChange={handleChange} />
+        <div className="Tray">
+          <button className="Button" type="submit">
+            Submit
+          </button>
+        </div>
+      </form>
+      <ul className="List">
+        {tasks.length > 0 &&
+          tasks.map(t => (
+            <li key={t.id} className="ListItem">
+              <Toggle>
+                {({ open, onToggle }) => (
+                  <div className="Todo">
+                    <button
+                      className="ActionButton"
+                      disabled={t.completed}
+                      onClick={onToggle}
+                    >
+                      Edit
+                    </button>
+
+                    <div className="InlineContent">
+                      {open ? (
+                        <EditItem
+                          item={t}
+                          onUpdate={handleUpdate}
+                          onDone={onToggle}
+                        />
+                      ) : t.completed ? (
+                        <span>
+                          <b>Completed!</b>{" "}
+                          <span className="strike">{t.task}</span>
+                        </span>
+                      ) : (
+                        <span>{t.task}</span>
+                      )}
+                    </div>
+
+                    <div className="InlineActions">
                       <button
                         className="ActionButton"
-                        disabled={t.completed}
-                        onClick={onToggle}
+                        onClick={() => handleRemove(t)}
                       >
-                        Edit
+                        Delete
                       </button>
-
-                      <div className="InlineContent">
-                        {open ? (
-                          <EditItem
-                            item={t}
-                            onUpdate={this.handleUpdate}
-                            onDone={onToggle}
-                          />
-                        ) : t.completed ? (
-                          <span>
-                            <b>Completed!</b>{" "}
-                            <span className="strike">{t.task}</span>
-                          </span>
-                        ) : (
-                          <span>{t.task}</span>
-                        )}
-                      </div>
-
-                      <div className="InlineActions">
-                        <button
-                          className="ActionButton"
-                          onClick={() => this.handleRemove(t)}
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="ActionButton"
-                          onClick={() => this.markAsComplete(t)}
-                        >
-                          {t.completed ? "Undo" : "Complete"}
-                        </button>
-                      </div>
+                      <button
+                        className="ActionButton"
+                        onClick={() => markAsComplete(t)}
+                      >
+                        {t.completed ? "Undo" : "Complete"}
+                      </button>
                     </div>
-                  )}
-                </Toggle>
-              </li>
-            ))}
-        </ul>
-      </>
-    );
-  }
-}
+                  </div>
+                )}
+              </Toggle>
+            </li>
+          ))}
+      </ul>
+    </>
+  );
+};

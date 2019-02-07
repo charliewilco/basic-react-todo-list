@@ -1,25 +1,21 @@
-import * as React from 'react';
+import * as React from "react";
 
-interface IState {
+interface IAction {
+  onToggle: () => void;
   open: boolean;
 }
 
-interface IAction extends IState {
-  onToggle: () => void; 
+interface ToggleProps {
+  defaultOpen?: boolean;
+  children: (x: IAction) => JSX.Element;
 }
 
-export default class Toggle extends React.Component<{
-  children: (x: IAction) => React.ReactNode
-}, IState> {
-  state = {
-    open: false
-  }
+export const Toggle = function(props: ToggleProps) {
+  const [open, setOpen] = React.useState(props.defaultOpen || false);
 
-  handleToggle = () => {
-    this.setState(state => ({ open: !state.open}))
-  }
+  const onToggle = () => {
+    setOpen(!open);
+  };
 
-  render() {
-    return this.props.children({ ...this.state, onToggle: this.handleToggle })
-  }
-}
+  return props.children({ open, onToggle });
+};

@@ -1,9 +1,8 @@
 :root {
   --w: 60rem;
-  --ss: system-ui, 'Avenir Next', 'Segoe UI', 'PT Sans', sans-serif;
-  --yellow: #FFBA00;
+  --ss: system-ui, "Avenir Next", "Segoe UI", "PT Sans", sans-serif;
+  --yellow: #ffba00;
 }
-
 
 * {
   margin: 0;
@@ -13,9 +12,9 @@
 
 html {
   box-sizing: border-box;
-  background: #092E41;
+  background: #092e41;
   font: 400 100%/1.6 var(--ss);
-  color: #B3DBEE;
+  color: #b3dbee;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -33,7 +32,7 @@ html {
   padding: 8px;
   margin-bottom: 1rem;
   display: block;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   border: 1px solid rgba(30, 184, 235, 0.35);
   resize: none;
   width: 100%;
@@ -54,10 +53,10 @@ html {
 
 .Button {
   background: var(--yellow);
-  color: #092E41;
+  color: #092e41;
   border: 0;
-  padding: .75rem 1rem;
-  border-radius: .5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
   font-size: 1rem;
   line-height: 1rem;
   appearance: none;
@@ -66,7 +65,7 @@ html {
 }
 
 .Button:hover {
-  background: #E29C00;
+  background: #e29c00;
 }
 
 .List {

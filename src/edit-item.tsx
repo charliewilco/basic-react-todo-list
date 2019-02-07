@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { TodoItem } from './list-view'
+import * as React from "react";
+import { TodoItem } from "./list-view";
 
 interface EditProps {
   item: TodoItem;
@@ -7,36 +7,22 @@ interface EditProps {
   onDone: () => void;
 }
 
-export class EditItem extends React.Component<
-  EditProps,
-  {
-    value: string;
-  }
-> {
-  state = {
-    value: this.props.item.task
+export const EditItem: React.FC<EditProps> = function(props) {
+  const [value, setValue] = React.useState(props.item.task);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
   };
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: event.target.value });
-  };
-
-  handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    this.props.onUpdate({ ...this.props.item, task: this.state.value });
-    this.props.onDone();
+    props.onUpdate({ ...props.item, task: value });
+    props.onDone();
   };
 
-  render() {
-    return (
-      <form className="InlineForm" onSubmit={this.handleSubmit}>
-        <input
-          className="InlineInput"
-          value={this.state.value}
-          onChange={this.handleChange}
-        />
-        <button type="submit">Submit</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form className="InlineForm" onSubmit={handleSubmit}>
+      <input className="InlineInput" value={value} onChange={handleChange} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};

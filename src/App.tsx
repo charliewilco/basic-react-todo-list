@@ -1,16 +1,14 @@
-import React, { Component } from "react";
-import { TodoItem, ListView, INITIAL_LIST } from "./list-view";
+import * as React from "react";
+import { ListView, INITIAL_LIST } from "./list-view";
 import "./App.css";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="Container">
-        <h1>Add a Todo</h1>
-        <ListView initialTasks={INITIAL_LIST} />
-      </div>
-    );
-  }
-}
+const App: React.FC<{}> = function(props) {
+  return (
+    <div className="Container">
+      <h1>Add a Todo</h1>
+      <ListView initialTasks={INITIAL_LIST} />
+    </div>
+  );
+};
 
 export default App;
