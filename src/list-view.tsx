@@ -1,6 +1,9 @@
 import * as React from "react";
 import uuid from "uuid";
 import Toggle from "./toggle";
+import { EditItem } from './edit-item'
+import { add, update, remove } from './utils'
+
 
 export interface TodoItem {
   completed: boolean;
@@ -23,73 +26,18 @@ export const INITIAL_LIST: TodoItem[] = [
 
 type TodoList = TodoItem[];
 
-const add = (todo: TodoItem, todos: TodoList): TodoList => {
-  if (todo) {
-    return [todo, ...todos];
-  } else {
-    return todos;
-  }
-};
 
-const remove = (removed: TodoItem, todos: TodoList): TodoList => {
-  return todos.filter(
-    (bookmark: TodoItem) => bookmark.id !== removed.id && bookmark
-  );
-};
 
-const update = (updated: TodoItem, todos: TodoList): TodoList => {
-  return todos.map(bookmark =>
-    bookmark.id !== updated.id ? bookmark : updated
-  );
-};
-
-interface EditProps {
-  item: TodoItem;
-  onUpdate: (t: TodoItem) => void;
-  onDone: () => void;
+interface ListViewProps {
+ initialTasks: TodoItem[] 
 }
 
-export class EditItem extends React.Component<
-  EditProps,
-  {
-    value: string;
-  }
-> {
-  state = {
-    value: this.props.item.task
-  };
-
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: event.target.value });
-  };
-
-  handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    this.props.onUpdate({ ...this.props.item, task: this.state.value });
-    this.props.onDone();
-  };
-
-  render() {
-    return (
-      <form className="InlineForm" onSubmit={this.handleSubmit}>
-        <input
-          className="InlineInput"
-          value={this.state.value}
-          onChange={this.handleChange}
-        />
-        <button type="submit">Submit</button>
-      </form>
-    );
-  }
-}
-
-export class ListView extends React.Component<
-  { initialTasks: TodoItem[] },
-  {
+interface ListViewState {
     tasks: TodoItem[];
     currentValue: string;
   }
-> {
+
+export class ListView extends React.Component<ListViewProps, ListViewState> {
   state = {
     tasks: this.props.initialTasks || [],
     currentValue: ""
