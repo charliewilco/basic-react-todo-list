@@ -15,5 +15,131 @@ code {
 
 h1 {
   font-weight: 900;
+  font-size: 300%;
   margin-bottom: 32px;
+}
+
+:root {
+  --w: 60rem;
+  --ss: system-ui, "Avenir Next", "Segoe UI", "PT Sans", sans-serif;
+  --yellow: #ffba00;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  box-sizing: border-box;
+  background: #092e41;
+  font: 400 100%/1.6 var(--ss);
+  color: #b3dbee;
+  -webkit-font-smoothing: antialiased;
+}
+
+.Container {
+  margin: 12rem auto 1rem;
+  padding: 8px;
+  max-width: 38rem;
+}
+
+.Form {
+  width: 100%;
+}
+
+.Input {
+  padding: 8px;
+  margin-bottom: 1rem;
+  display: block;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(30, 184, 235, 0.35);
+  resize: none;
+  width: 100%;
+  font: inherit;
+  color: white;
+  background: #063651;
+  transition: border-color 375ms ease-in-out;
+}
+
+.Tray {
+  margin-bottom: 16px;
+}
+
+.Tray > .Button {
+  display: block;
+  margin-left: auto;
+}
+
+.Button {
+  background: var(--yellow);
+  color: #092e41;
+  border: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  appearance: none;
+  font-weight: 900;
+  transition: background-color 375ms ease-in-out;
+}
+
+.Button:hover {
+  background: #e29c00;
+}
+
+.List {
+  list-style: none inside;
+}
+
+.ListItem {
+  padding: 12px 0;
+}
+
+.ListItem:not(:last-of-type) {
+  border-bottom: 1px solid rgba(30, 184, 235, 0.35);
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+.InlineContent {
+  width: calc(100% - 18.75% - 20px);
+}
+
+.InlineActions {
+  width: 18.75%;
+  display: flex;
+}
+.InlineForm {
+  width: 100%;
+  display: flex;
+}
+
+.InlineInput {
+  flex: 1;
+  display: block;
+  padding: 2px;
+}
+
+.ActionButton {
+  padding: 4px;
+  background: none;
+  font-weight: 700;
+  border: 0;
+  color: white;
+}
+
+.InlineActions > * + * {
+  margin-left: 8px;
+}
+
+.InlineEdit {
+  margin-right: 8px;
+}
+
+.Todo {
+  display: flex;
 }

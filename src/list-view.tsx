@@ -28,7 +28,7 @@ interface ListViewProps {
 }
 
 export const ListView: React.FC<ListViewProps> = function(props) {
-  const [tasks, setTasks] = React.useState(props.initialTasks);
+  const [tasks, setTasks] = React.useState(props.initialTasks || []);
   const [value, setValue] = React.useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
