@@ -1,122 +1,131 @@
-import * as React from "react";
-import uuid from "uuid";
-import { Toggle } from "./toggle";
-import { EditItem } from "./edit-item";
-import { add, update, remove } from "./utils";
+import * as React from 'react';
+import { Dialog } from "@reach/dialog";
+import "@reach/dialog/styles.css";
+import { FiFilter } from 'react-icons/fi';
+import ListItem from './list-item';
+import TodoForm from './todo-form';
+import {
+  Action,
+  TodoActions,
+  reducer,
+  INITIAL_LIST,
+  Filters,
+  TodoItem,
+} from './reducer';
 
-export interface TodoItem {
-  completed: boolean;
-  id: string;
-  task: string;
+interface IListProps {
+  todos: TodoItem[];
+  dispatch: React.Dispatch<Action>;
 }
 
-export const INITIAL_LIST: TodoItem[] = [
-  {
-    id: uuid(),
-    completed: false,
-    task: "get lunch"
-  },
-  {
-    id: uuid(),
-    completed: false,
-    task: "Check Flight"
+function List(props: IListProps) {
+  return (
+    <ul className="List">
+      {props.todos.length > 0 ? (
+        props.todos.map(t => (
+          <ListItem
+            key={t.id}
+            todo={t}
+            onEdit={id => props.dispatch({type: TodoActions.EDIT_TODO, id})}
+            onRemove={id => props.dispatch({type: TodoActions.REMOVE_TODO, id})}
+            onUpdate={(id, task) =>
+              props.dispatch({type: TodoActions.UPDATE_TODO, id, payload: task})
+            }
+            onUndo={id =>
+              props.dispatch({type: TodoActions.MARK_AS_NOT_COMPLETED, id})
+            }
+            onCompleted={id =>
+              props.dispatch({type: TodoActions.MARK_AS_COMPLETED, id})
+            }
+          />
+        ))
+      ) : (
+        <div>
+          <h2>Nothing to see here!</h2>
+        </div>
+      )}
+    </ul>
+  );
+}
+
+interface IFilterButtonProps {
+  filters: Filters[];
+  current: Filters;
+  onUpdateFilter(f: Filters): void;
+}
+
+function FilterButtons(props: IFilterButtonProps) {
+  return (
+    <nav className="Filters">
+      <FiFilter />
+        <ul style={{ listStyle: "none inside", margin: 0, marginLeft: 16, padding: 0}}>
+
+
+      
+      {props.filters.map(f => (
+          <li key={f} style={{ display: "inline-block" }}>
+        <button
+          className={['FilterButton', props.current === f && 'active']
+            .filter(Boolean)
+            .join(' ')}
+          onClick={() => props.onUpdateFilter(f)}>
+          {f}
+        </button>
+          </li>
+      ))}
+          </ul>
+    </nav>
+  );
+}
+
+export const ListView: React.FC = function() {
+  const [state, dispatch] = React.useReducer(reducer, {
+    currentFilter: 'All',
+    todos: INITIAL_LIST,
+  });
+
+  const completed = React.useMemo(
+    () => state.todos.filter(todo => todo.completed),
+    [state],
+  );
+  const incompleted = React.useMemo(
+    () => state.todos.filter(todo => !todo.completed),
+    [state],
+  );
+
+  function updateFilter(f: Filters) {
+    dispatch({type: TodoActions.CHANGE_FILTER, payload: f});
   }
-];
-
-interface ListViewProps {
-  initialTasks: TodoItem[];
-}
-
-export const ListView: React.FC<ListViewProps> = function(props) {
-  const [tasks, setTasks] = React.useState(props.initialTasks || []);
-  const [value, setValue] = React.useState("");
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    setTasks(add({ task: value, id: uuid(), completed: false }, tasks));
-
-    setValue("");
-  };
-
-  const handleRemove = (task: TodoItem) => {
-    setTasks(remove(task, tasks));
-  };
-
-  const handleUpdate = (task: TodoItem) => {
-    setTasks(update(task, tasks));
-  };
-
-  const markAsComplete = (task: TodoItem) => {
-    setTasks(update({ ...task, completed: !task.completed }, tasks));
-  };
 
   return (
     <>
-      <form className="Form" onSubmit={handleSubmit}>
-        <input className="Input" value={value} onChange={handleChange} />
-        <div className="Tray">
-          <button className="Button" type="submit">
-            Submit
-          </button>
-        </div>
-      </form>
-      <ul className="List">
-        {tasks.length > 0 &&
-          tasks.map(t => (
-            <li key={t.id} className="ListItem">
-              <Toggle>
-                {({ open, onToggle }) => (
-                  <div className="Todo">
-                    <button
-                      className="ActionButton"
-                      disabled={t.completed}
-                      onClick={onToggle}
-                    >
-                      Edit
-                    </button>
 
-                    <div className="InlineContent">
-                      {open ? (
-                        <EditItem
-                          item={t}
-                          onUpdate={handleUpdate}
-                          onDone={onToggle}
-                        />
-                      ) : t.completed ? (
-                        <span>
-                          <b>Completed!</b>{" "}
-                          <span className="strike">{t.task}</span>
-                        </span>
-                      ) : (
-                        <span>{t.task}</span>
-                      )}
-                    </div>
+      <FilterButtons
+        current={state.currentFilter}
+        filters={['All', 'Completed', 'Todo']}
+        onUpdateFilter={updateFilter}
+      />
 
-                    <div className="InlineActions">
-                      <button
-                        className="ActionButton"
-                        onClick={() => handleRemove(t)}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="ActionButton"
-                        onClick={() => markAsComplete(t)}
-                      >
-                        {t.completed ? "Undo" : "Complete"}
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </Toggle>
-            </li>
-          ))}
-      </ul>
+      <List
+        dispatch={dispatch}
+        todos={
+          state.currentFilter === 'All'
+            ? state.todos
+            : state.currentFilter === 'Completed'
+            ? completed
+            : incompleted
+        }
+      />
+
+    <Dialog isOpen={true}>
+      <TodoForm
+        onSubmit={value =>
+          dispatch({type: TodoActions.ADD_TODO, payload: value})
+        }
+      />
+
+
+    </Dialog>
     </>
   );
 };

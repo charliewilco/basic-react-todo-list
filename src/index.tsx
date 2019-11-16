@@ -1,16 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { ListView, INITIAL_LIST } from "./list-view";
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {ListView} from './list-view';
+import './index.css';
 
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <div className="Container">
-    <h1>Add a Task</h1>
-    <ListView initialTasks={INITIAL_LIST} />
+    <h1>Tasks</h1>
+    <ListView />
   </div>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

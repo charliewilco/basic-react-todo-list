@@ -1,27 +1,27 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
 h1 {
-  font-weight: 900;
+  font-weight: 300;
   font-size: 300%;
   margin-bottom: 32px;
 }
 
 :root {
   --w: 60rem;
-  --ss: system-ui, "Avenir Next", "Segoe UI", "PT Sans", sans-serif;
+  --ss: system-ui, 'Avenir Next', 'Segoe UI', 'PT Sans', sans-serif;
   --yellow: #ffba00;
 }
 
@@ -33,14 +33,14 @@ h1 {
 
 html {
   box-sizing: border-box;
-  background: #092e41;
+  background: #04060b;
   font: 400 100%/1.6 var(--ss);
-  color: #b3dbee;
+  color: #f7f8fb;
   -webkit-font-smoothing: antialiased;
 }
 
 .Container {
-  margin: 12rem auto 1rem;
+  margin: 1rem auto 1rem;
   padding: 8px;
   max-width: 38rem;
 }
@@ -89,6 +89,11 @@ html {
   background: #e29c00;
 }
 
+.Button:disabled {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
 .List {
   list-style: none inside;
 }
@@ -97,20 +102,16 @@ html {
   padding: 12px 0;
 }
 
-.ListItem:not(:last-of-type) {
-  border-bottom: 1px solid rgba(30, 184, 235, 0.35);
-}
-
 .strike {
   text-decoration: line-through;
 }
 
 .InlineContent {
-  width: calc(100% - 18.75% - 20px);
+  width: 100%;
 }
 
 .InlineActions {
-  width: 18.75%;
+  justify-content: flex-end;
   display: flex;
 }
 .InlineForm {
@@ -141,5 +142,30 @@ html {
 }
 
 .Todo {
+  background: #4e5562;
+  border-radius: 8px;
+  padding: 16px;
   display: flex;
+}
+
+.Filters {
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.FilterButton {
+  appearance: none;
+  padding: 8px;
+  background: #4e5562;
+  color: inherit;
+  border: 0;
+  border-radius: 8px;
+  margin-right: 16px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.FilterButton.active {
+  background: #db6043;
 }
