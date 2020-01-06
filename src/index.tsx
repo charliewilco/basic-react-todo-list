@@ -6,10 +6,12 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <div className="Container">
-    <h1>Tasks</h1>
-    <ListView />
-  </div>,
+  <React.StrictMode>
+    <div className="Container">
+      <h1>Tasks</h1>
+      <ListView />
+    </div>
+  </React.StrictMode>,
   document.getElementById('root'),
 );
 

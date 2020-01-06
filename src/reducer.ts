@@ -1,4 +1,5 @@
 import * as React from 'react';
+import produce from 'immer';
 import uuid from 'uuid/v4';
 
 export interface TodoItem {
@@ -13,6 +14,7 @@ export type Filters = 'All' | 'Completed' | 'Todo';
 interface ITodoListState {
   todos: TodoItem[];
   currentFilter: Filters;
+  modalOpen: boolean;
 }
 
 export enum TodoActions {
@@ -40,6 +42,10 @@ export const INITIAL_LIST: TodoItem[] = [
   },
 ];
 
+export const GLOBAL_TODOS = {
+  todos: [...INITIAL_LIST],
+};
+
 export type Action =
   | {
       type: TodoActions.ADD_TODO;
@@ -63,98 +69,85 @@ export type Action =
       id: string;
     };
 
-export const reducer: React.Reducer<ITodoListState, Action> = (
-  state: ITodoListState,
-  action: Action,
-): ITodoListState => {
-  switch (action.type) {
-    case TodoActions.ADD_TODO: {
-      if (action.payload.length > 0) {
-        return {
-          ...state,
-          todos: [
-            {
-              task: action.payload,
-              id: uuid(),
-              completed: false,
-              editing: false,
-            },
-            ...state.todos,
-          ],
-        };
+export const reducer: React.Reducer<ITodoListState, Action> = produce(
+  (draft: ITodoListState, action: Action) => {
+    switch (action.type) {
+      case TodoActions.ADD_TODO: {
+        if (action.payload.length > 0) {
+          draft.todos.unshift({
+            task: action.payload,
+            id: uuid(),
+            completed: false,
+            editing: false,
+          });
+        }
+        break;
       }
-      return state;
-    }
-    case TodoActions.UPDATE_TODO: {
-      const todos = state.todos.map(t =>
-        t.id !== action.id ? t : {...t, editing: false, task: action.payload},
-      );
+      case TodoActions.UPDATE_TODO: {
+        const index = draft.todos.findIndex(
+          element => element.id === action.id,
+        );
 
-      return {
-        ...state,
-        todos,
-      };
-    }
-    case TodoActions.REMOVE_TODO: {
-      const todos = state.todos.filter(t => t.id !== action.id && t);
+        draft.todos[index] = {
+          ...draft.todos[index],
+          editing: false,
+          task: action.payload,
+        };
 
-      return {
-        ...state,
-        todos,
-      };
-    }
-    case TodoActions.EDIT_TODO: {
-      const todos = state.todos.map(t =>
-        t.id !== action.id
-          ? t
-          : {
-              ...t,
-              editing: true,
-            },
-      );
+        draft.modalOpen = false;
+        break;
+      }
+      case TodoActions.REMOVE_TODO: {
+        const index = draft.todos.findIndex(
+          element => element.id === action.id,
+        );
 
-      return {
-        ...state,
-        todos,
-      };
-    }
-    case TodoActions.MARK_AS_NOT_COMPLETED: {
-      const todos = state.todos.map(t =>
-        t.id !== action.id
-          ? t
-          : {
-              ...t,
-              completed: false,
-            },
-      );
+        draft.todos.splice(index, 1);
 
-      return {
-        ...state,
-        todos,
-      };
-    }
-    case TodoActions.MARK_AS_COMPLETED: {
-      const todos = state.todos.map(t =>
-        t.id !== action.id
-          ? t
-          : {
-              ...t,
-              completed: true,
-            },
-      );
+        break;
+      }
+      case TodoActions.EDIT_TODO: {
+        const index = draft.todos.findIndex(
+          element => element.id === action.id,
+        );
 
-      return {
-        ...state,
-        todos,
-      };
+        draft.modalOpen = true;
+        draft.todos[index] = {
+          ...draft.todos[index],
+          editing: true,
+        };
+
+        break;
+      }
+      case TodoActions.MARK_AS_NOT_COMPLETED: {
+        const index = draft.todos.findIndex(
+          element => element.id === action.id,
+        );
+
+        draft.todos[index] = {
+          ...draft.todos[index],
+          completed: false,
+        };
+
+        break;
+      }
+      case TodoActions.MARK_AS_COMPLETED: {
+        const index = draft.todos.findIndex(
+          element => element.id === action.id,
+        );
+
+        draft.todos[index] = {
+          ...draft.todos[index],
+          completed: true,
+        };
+
+        break;
+      }
+      case TodoActions.CHANGE_FILTER: {
+        draft.currentFilter = action.payload;
+
+        break;
+      }
     }
-    case TodoActions.CHANGE_FILTER: {
-      return {
-        ...state,
-        currentFilter: action.payload,
-      };
-    }
-    default:
-      throw new Error('Must specify Action Type');
-  }
-};
+  },
+);

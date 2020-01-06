@@ -9,10 +9,12 @@
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "@types/uuid": "^3.4.6",
+    "immer": "^5.0.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-icons": "^3.8.0",
     "react-scripts": "^3.2.0",
+    "swr": "^0.1.12",
     "typescript": "^3.7.2",
     "uuid": "^3.3.3"
   },
@@ -27,6 +29,13 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "prettier": {
+    "printWidth": 95,
+    "useTabs": false,
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "jsxBracketSameLine": true
   },
   "browserslist": [
     ">0.2%",

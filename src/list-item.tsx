@@ -39,29 +39,30 @@ export default function ListItem(props: IListItemProps) {
   return (
     <li className="ListItem">
       <div className="Todo">
-            <button
-              className="ActionButton"
-              onClick={() =>
-                props.todo.completed
-                  ? props.onUndo(props.todo.id)
-                  : props.onCompleted(props.todo.id)
-              }>
-                <FiCheckCircle size={16} color={props.todo.completed ? "#9de4b5" : '#04060b' } />
-            </button>
+        <button
+          className="ActionButton"
+          onClick={() =>
+            props.todo.completed
+              ? props.onUndo(props.todo.id)
+              : props.onCompleted(props.todo.id)
+          }>
+          <FiCheckCircle
+            size={16}
+            color={props.todo.completed ? '#9de4b5' : '#04060b'}
+          />
+        </button>
 
         <div
           style={{
             display: 'flex',
             width: '100%',
             justifyContent: 'space-between',
-              marginLeft: 8
+            marginLeft: 8,
           }}>
           <div className="InlineContent">
-            {props.todo.editing ? (
-              <EditItem item={props.todo} onUpdate={props.onUpdate} />
-            ) : props.todo.completed ? (
+            {props.todo.completed ? (
               <span>
-                <b style={{ color: "#9de4b5" }}>Completed!</b>{' '}
+                <b style={{color: '#9de4b5'}}>Completed!</b>{' '}
                 <span className="strike">{props.todo.task}</span>
               </span>
             ) : (
@@ -75,12 +76,12 @@ export default function ListItem(props: IListItemProps) {
               onClick={() => props.onRemove(props.todo.id)}>
               <FiTrash2 size={16} />
             </button>
-        <button
-          className="ActionButton"
-          disabled={props.todo.completed}
-          onClick={() => props.onEdit(props.todo.id)}>
-          <FiEdit3 size={16} />
-        </button>
+            <button
+              className="ActionButton"
+              disabled={props.todo.completed}
+              onClick={() => props.onEdit(props.todo.id)}>
+              <FiEdit3 size={16} />
+            </button>
           </div>
         </div>
       </div>
