@@ -1,129 +1,110 @@
-import * as React from 'react';
-import {Dialog} from '@reach/dialog';
-import '@reach/dialog/styles.css';
-import {FiFilter} from 'react-icons/fi';
-import ListItem from './list-item';
-import TodoForm from './todo-form';
-import {
-  Action,
-  TodoActions,
-  reducer,
-  INITIAL_LIST,
-  Filters,
-  TodoItem,
-} from './reducer';
+import * as React from "react";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
+
+import { Dialog } from "@reach/dialog";
+import "@reach/tabs/styles.css";
+import "@reach/dialog/styles.css";
+import ListItem from "./list-item";
+import TodoForm from "./todo-form";
+import { Action, TodoActions, reducer, INITIAL_LIST, TodoItem } from "./reducer";
 
 interface IListProps {
   todos: TodoItem[];
   dispatch: React.Dispatch<Action>;
 }
 
-function List({todos, dispatch}: IListProps) {
+function List({ todos, dispatch }: IListProps) {
   return (
-    <ul className="List">
-      {todos.length > 0 ? (
-        todos.map(t => (
-          <ListItem
-            key={t.id}
-            todo={t}
-            onEdit={id => dispatch({type: TodoActions.EDIT_TODO, id})}
-            onRemove={id => dispatch({type: TodoActions.REMOVE_TODO, id})}
-            onUpdate={(id, task) =>
-              dispatch({type: TodoActions.UPDATE_TODO, id, payload: task})
-            }
-            onUndo={id =>
-              dispatch({type: TodoActions.MARK_AS_NOT_COMPLETED, id})
-            }
-            onCompleted={id =>
-              dispatch({type: TodoActions.MARK_AS_COMPLETED, id})
-            }
-          />
-        ))
-      ) : (
-        <div>
-          <h2>Nothing to see here!</h2>
-        </div>
-      )}
-    </ul>
-  );
-}
-
-interface IFilterButtonProps {
-  filters: Filters[];
-  current: Filters;
-  onUpdateFilter(f: Filters): void;
-}
-
-function FilterButtons(props: IFilterButtonProps) {
-  return (
-    <nav className="Filters">
-      <FiFilter />
-      <ul
-        style={{
-          listStyle: 'none inside',
-          margin: 0,
-          marginLeft: 16,
-          padding: 0,
-        }}>
-        {props.filters.map(f => (
-          <li key={f} style={{display: 'inline-block'}}>
-            <button
-              className={['FilterButton', props.current === f && 'active']
-                .filter(Boolean)
-                .join(' ')}
-              onClick={() => props.onUpdateFilter(f)}>
-              {f}
-            </button>
-          </li>
-        ))}
+    <div>
+      <ul className="List">
+        {todos.length > 0 ? (
+          todos.map(t => (
+            <ListItem
+              key={t.id}
+              todo={t}
+              onEdit={id => dispatch({ type: TodoActions.EDIT_TODO, id })}
+              onRemove={id => dispatch({ type: TodoActions.REMOVE_TODO, id })}
+              onUpdate={(id, task) =>
+                dispatch({ type: TodoActions.UPDATE_TODO, id, payload: task })
+              }
+              onUndo={id => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id })}
+              onCompleted={id => dispatch({ type: TodoActions.MARK_AS_COMPLETED, id })}
+            />
+          ))
+        ) : (
+          <div>
+            <h2>Nothing to see here!</h2>
+          </div>
+        )}
       </ul>
-    </nav>
+      <div className="ActionTray">
+        <button
+          className="Button"
+          type="button"
+          onClick={() =>
+            dispatch({
+              type: TodoActions.OPEN_MODAL
+            })
+          }>
+          Add New
+        </button>
+      </div>
+    </div>
   );
 }
 
 export const ListView: React.FC = function() {
   const [state, dispatch] = React.useReducer(reducer, {
     modalOpen: false,
-    currentFilter: 'All',
-    todos: INITIAL_LIST,
+    selected: null,
+    currentFilter: "All",
+    todos: INITIAL_LIST
   });
 
-  const completed = React.useMemo(
-    () => state.todos.filter(todo => todo.completed),
-    [state],
-  );
-  const incompleted = React.useMemo(
-    () => state.todos.filter(todo => !todo.completed),
-    [state],
-  );
-
-  function updateFilter(f: Filters) {
-    dispatch({type: TodoActions.CHANGE_FILTER, payload: f});
-  }
+  const completed = React.useMemo(() => state.todos.filter(todo => todo.completed), [state]);
+  const incompleted = React.useMemo(() => state.todos.filter(todo => !todo.completed), [
+    state
+  ]);
 
   return (
     <>
-      <FilterButtons
-        current={state.currentFilter}
-        filters={['All', 'Completed', 'Todo']}
-        onUpdateFilter={updateFilter}
-      />
+      <Tabs>
+        <TabList className="Filters">
+          <Tab>All</Tab>
+          <Tab>Completed</Tab>
+          <Tab>Todo</Tab>
+        </TabList>
 
-      <List
-        dispatch={dispatch}
-        todos={
-          state.currentFilter === 'All'
-            ? state.todos
-            : state.currentFilter === 'Completed'
-            ? completed
-            : incompleted
-        }
-      />
+        <TabPanels>
+          <TabPanel>
+            <List dispatch={dispatch} todos={state.todos} />
+          </TabPanel>
+          <TabPanel>
+            <List dispatch={dispatch} todos={completed} />
+          </TabPanel>
+          <TabPanel>
+            <List dispatch={dispatch} todos={incompleted} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
 
-      <Dialog isOpen={state.modalOpen}>
+      <Dialog
+        isOpen={state.modalOpen}
+        onDismiss={() =>
+          dispatch({
+            type: TodoActions.DISMISS_MODAL
+          })
+        }>
         <TodoForm
+          value={state.selected !== null ? state.selected.task : null}
           onSubmit={value =>
-            dispatch({type: TodoActions.ADD_TODO, payload: value})
+            state.selected !== null
+              ? dispatch({
+                  type: TodoActions.UPDATE_TODO,
+                  payload: value,
+                  id: state.selected.id
+                })
+              : dispatch({ type: TodoActions.ADD_TODO, payload: value })
           }
         />
       </Dialog>

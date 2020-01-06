@@ -1,11 +1,12 @@
-import * as React from 'react';
+import * as React from "react";
 
 interface ITodoForm {
+  value: string | null;
   onSubmit(value: string): void;
 }
 
 export default function TodoForm(props: ITodoForm) {
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState(props.value === null ? "" : props.value);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
@@ -15,7 +16,7 @@ export default function TodoForm(props: ITodoForm) {
 
     props.onSubmit(value);
 
-    setValue('');
+    setValue("");
   };
 
   return (

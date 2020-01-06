@@ -1,16 +1,14 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 h1 {
@@ -22,7 +20,7 @@ h1 {
 
 :root {
   --w: 60rem;
-  --ss: system-ui, 'Avenir Next', 'Segoe UI', 'PT Sans', sans-serif;
+  --ss: system-ui, "Avenir Next", "Segoe UI", "PT Sans", sans-serif;
   --yellow: #ffba00;
 }
 
@@ -55,12 +53,12 @@ html {
   margin-bottom: 1rem;
   display: block;
   border-radius: 0.25rem;
-  border: 1px solid rgba(30, 184, 235, 0.35);
+  border: 1px solid rgba(4, 6, 11, 0.5);
   resize: none;
   width: 100%;
   font: inherit;
-  color: white;
-  background: #063651;
+  color: #04060b;
+  background: white;
   transition: border-color 375ms ease-in-out;
 }
 
@@ -74,7 +72,7 @@ html {
 }
 
 .Button {
-  background: var(--yellow);
+  background: white;
   color: #092e41;
   border: 0;
   padding: 0.75rem 1rem;
@@ -149,13 +147,31 @@ html {
   display: flex;
 }
 
-.Filters {
-  margin-bottom: 64px;
+.FilterContainer {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 64px;
 }
 
-.FilterButton {
+.Filters {
+  display: flex;
+  align-items: center;
+  margin-bottom: 64px;
+}
+
+.ActionTray {
+  display: flex;
+  justify-content: flex-end;
+}
+
+[data-reach-dialog-content] {
+  width: 100% !important;
+  max-width: 33rem !important;
+  background: #4e5562 !important;
+}
+
+[data-reach-tab] {
   appearance: none;
   padding: 8px;
   background: #4e5562;
@@ -167,12 +183,6 @@ html {
   font-size: 14px;
 }
 
-.FilterButton.active {
+[data-reach-tab][data-selected] {
   background: #db6043;
-}
-
-[data-reach-dialog-content] {
-  width: 100% !important;
-  max-width: 33rem !important;
-  background: #4e5562 !important;
 }
