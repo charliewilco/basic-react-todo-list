@@ -1,3 +1,6 @@
+@import "~@reach/tabs/styles.css";
+@import "~@reach/dialog/styles.css";
+
 body {
   margin: 0;
   padding: 0;

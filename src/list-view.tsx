@@ -2,8 +2,6 @@ import * as React from "react";
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
 
 import { Dialog } from "@reach/dialog";
-import "@reach/tabs/styles.css";
-import "@reach/dialog/styles.css";
 import ListItem from "./list-item";
 import TodoForm from "./todo-form";
 import { Action, TodoActions, reducer, INITIAL_LIST, TodoItem } from "./reducer";
