@@ -20,7 +20,7 @@
     "uuid": "^8.1.0"
   },
   "devDependencies": {
-    "prettier": "^1.19.1"
+    "prettier": "^2.0.5"
   },
   "scripts": {
     "start": "next start",
