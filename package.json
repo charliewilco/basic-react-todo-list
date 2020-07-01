@@ -16,7 +16,7 @@
     "react-dom": "^16.13.1",
     "react-icons": "^3.10.0",
     "swr": "^0.2.1",
-    "typescript": "^3.9.3",
+    "typescript": "^3.9.6",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
