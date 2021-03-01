@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@reach/dialog": "^0.10.3",
+    "@reach/dialog": "^0.13.2",
     "@reach/tabs": "^0.10.5",
     "@types/jest": "^26.0.6",
     "@types/node": "^14.0.24",
