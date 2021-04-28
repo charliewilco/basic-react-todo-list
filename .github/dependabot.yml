@@ -1,0 +1,26 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "13:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.17
+    - 14.14.22
+  - dependency-name: "@reach/dialog"
+    versions:
+    - 0.12.1
+    - 0.13.0
+  - dependency-name: next
+    versions:
+    - 10.0.6
+  - dependency-name: "@types/react"
+    versions:
+    - 17.0.0
+  - dependency-name: "@types/jest"
+    versions:
+    - 26.0.19
