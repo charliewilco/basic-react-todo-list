@@ -1,6 +1,6 @@
-import * as React from "react";
 import produce from "immer";
-import { v4 as uuid } from "uuid";
+import cuid from "cuid";
+import React from "react";
 
 export interface TodoItem {
   completed: boolean;
@@ -13,12 +13,6 @@ export type Filters = "All" | "Completed" | "Todo";
 
 interface ITodoListState {
   todos: TodoItem[];
-  currentFilter: Filters;
-  modalOpen: boolean;
-  selected: null | {
-    task: string;
-    id: string;
-  };
 }
 
 export enum TodoActions {
@@ -27,20 +21,18 @@ export enum TodoActions {
   UPDATE_TODO = "UPDATE_TODO",
   REMOVE_TODO = "REMOVE_TODO",
   MARK_AS_COMPLETED = "MARK_AS_COMPLETED",
-  MARK_AS_NOT_COMPLETED = "MARK_AS_NOT_COMPLETED",
-  OPEN_MODAL = "OPEN_MODAL",
-  DISMISS_MODAL = "DISMISS_MODAL"
+  MARK_AS_NOT_COMPLETED = "MARK_AS_NOT_COMPLETED"
 }
 
 export const INITIAL_LIST: TodoItem[] = [
   {
-    id: uuid(),
+    id: cuid(),
     completed: false,
-    task: "get lunch",
+    task: "Get Lunch",
     editing: false
   },
   {
-    id: uuid(),
+    id: cuid(),
     completed: false,
     task: "Check Flight",
     editing: false
@@ -54,7 +46,7 @@ export const GLOBAL_TODOS = {
 export type Action =
   | {
       type: TodoActions.ADD_TODO;
-      payload: string;
+      payload: TodoItem;
     }
   | {
       type: TodoActions.UPDATE_TODO;
@@ -63,29 +55,17 @@ export type Action =
     }
   | {
       type:
-        | TodoActions.EDIT_TODO
         | TodoActions.REMOVE_TODO
         | TodoActions.MARK_AS_COMPLETED
         | TodoActions.MARK_AS_NOT_COMPLETED;
       id: string;
-    }
-  | {
-      type: TodoActions.OPEN_MODAL | TodoActions.DISMISS_MODAL;
     };
 
-export const reducer: React.Reducer<ITodoListState, Action> = produce(
+export const listReducer: React.Reducer<ITodoListState, Action> = produce(
   (draft: ITodoListState, action: Action) => {
     switch (action.type) {
       case TodoActions.ADD_TODO: {
-        if (action.payload.length > 0) {
-          draft.todos.unshift({
-            task: action.payload,
-            id: uuid(),
-            completed: false,
-            editing: false
-          });
-        }
-        draft.modalOpen = false;
+        draft.todos.unshift(action.payload);
         break;
       }
       case TodoActions.UPDATE_TODO: {
@@ -96,8 +76,6 @@ export const reducer: React.Reducer<ITodoListState, Action> = produce(
           editing: false,
           task: action.payload
         };
-        draft.selected = null;
-        draft.modalOpen = false;
         break;
       }
       case TodoActions.REMOVE_TODO: {
@@ -107,22 +85,7 @@ export const reducer: React.Reducer<ITodoListState, Action> = produce(
 
         break;
       }
-      case TodoActions.EDIT_TODO: {
-        const index = draft.todos.findIndex(element => element.id === action.id);
 
-        draft.modalOpen = true;
-        draft.todos[index] = {
-          ...draft.todos[index],
-          editing: true
-        };
-
-        draft.selected = {
-          task: draft.todos[index].task,
-          id: draft.todos[index].id
-        };
-
-        break;
-      }
       case TodoActions.MARK_AS_NOT_COMPLETED: {
         const index = draft.todos.findIndex(element => element.id === action.id);
 
@@ -141,17 +104,6 @@ export const reducer: React.Reducer<ITodoListState, Action> = produce(
           completed: true
         };
 
-        break;
-      }
-      case TodoActions.DISMISS_MODAL: {
-        draft.modalOpen = false;
-        draft.selected = null;
-
-        break;
-      }
-
-      case TodoActions.OPEN_MODAL: {
-        draft.modalOpen = true;
         break;
       }
     }
