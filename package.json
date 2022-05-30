@@ -17,6 +17,8 @@
     "typescript": "^4.7.2"
   },
   "devDependencies": {
+    "eslint": "8.16.0",
+    "eslint-config-next": "12.1.6",
     "prettier": "^2.6.2"
   },
   "scripts": {
@@ -30,6 +32,9 @@
     "tabWidth": 2,
     "bracketSpacing": true,
     "bracketSameLine": true
+  },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
   },
   "browserslist": [
     ">0.2%",

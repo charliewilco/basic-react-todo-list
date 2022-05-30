@@ -1,31 +1,36 @@
-import { useReducer, useMemo } from "react"
+import { useReducer, useMemo } from "react";
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
 import { Dialog } from "@reach/dialog";
-import ListItem from "./list-item";
-import TodoForm from "./todo-form";
+import { ListItem } from "./list-item";
+import { TodoForm } from "./todo-form";
 import { Action, TodoActions, reducer, INITIAL_LIST, TodoItem } from "./reducer";
 
 interface IListProps {
   todos: TodoItem[];
-  dispatch: React.Dispatch<Action>;
+  dispatch: (value: Action) => void;
 }
 
-function List({ todos, dispatch }: IListProps) {
+const List = ({ todos, dispatch }: IListProps) => {
+  const handleEdit = (id: string) => dispatch({ type: TodoActions.EDIT_TODO, id });
+  const handleRemove = (id: string) => dispatch({ type: TodoActions.REMOVE_TODO, id });
+  const handleUpdate = (id: string, task: string) =>
+    dispatch({ type: TodoActions.UPDATE_TODO, id, payload: task });
+  const handleUndo = (id: string) => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id });
+  const handleCompleted = (id: string) =>
+    dispatch({ type: TodoActions.MARK_AS_COMPLETED, id });
   return (
     <div>
       <ul className="List">
         {todos.length > 0 ? (
-          todos.map(t => (
+          todos.map((t) => (
             <ListItem
               key={t.id}
               todo={t}
-              onEdit={id => dispatch({ type: TodoActions.EDIT_TODO, id })}
-              onRemove={id => dispatch({ type: TodoActions.REMOVE_TODO, id })}
-              onUpdate={(id, task) =>
-                dispatch({ type: TodoActions.UPDATE_TODO, id, payload: task })
-              }
-              onUndo={id => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id })}
-              onCompleted={id => dispatch({ type: TodoActions.MARK_AS_COMPLETED, id })}
+              onEdit={handleEdit}
+              onRemove={handleRemove}
+              onUpdate={handleUpdate}
+              onUndo={handleUndo}
+              onCompleted={handleCompleted}
             />
           ))
         ) : (
@@ -40,7 +45,7 @@ function List({ todos, dispatch }: IListProps) {
           type="button"
           onClick={() =>
             dispatch({
-              type: TodoActions.OPEN_MODAL
+              type: TodoActions.OPEN_MODAL,
             })
           }>
           Add New
@@ -48,20 +53,18 @@ function List({ todos, dispatch }: IListProps) {
       </div>
     </div>
   );
-}
+};
 
-export const ListView: React.FC = function() {
-  const [state, dispatch] = useReducer(reducer, {
+export const ListView = () => {
+  const [{ todos, selected, modalOpen }, dispatch] = useReducer(reducer, {
     modalOpen: false,
     selected: null,
     currentFilter: "All",
-    todos: INITIAL_LIST
+    todos: INITIAL_LIST,
   });
 
-  const completed = useMemo(() => state.todos.filter(todo => todo.completed), [state]);
-  const incompleted = useMemo(() => state.todos.filter(todo => !todo.completed), [
-    state
-  ]);
+  const completed = useMemo(() => todos.filter((todo) => todo.completed), [todos]);
+  const incompleted = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
 
   return (
     <>
@@ -74,7 +77,7 @@ export const ListView: React.FC = function() {
 
         <TabPanels>
           <TabPanel>
-            <List dispatch={dispatch} todos={state.todos} />
+            <List dispatch={dispatch} todos={todos} />
           </TabPanel>
           <TabPanel>
             <List dispatch={dispatch} todos={completed} />
@@ -86,21 +89,21 @@ export const ListView: React.FC = function() {
       </Tabs>
 
       <Dialog
-        aria-label={state.selected ? "Edit Todo Form" : "Create New Todo Form"}
-        isOpen={state.modalOpen}
+        aria-label={selected ? "Edit Todo Form" : "Create New Todo Form"}
+        isOpen={modalOpen}
         onDismiss={() =>
           dispatch({
-            type: TodoActions.DISMISS_MODAL
+            type: TodoActions.DISMISS_MODAL,
           })
         }>
         <TodoForm
-          value={state.selected !== null ? state.selected.task : null}
-          onSubmit={value =>
-            state.selected !== null
+          value={selected !== null ? selected.task : null}
+          onSubmit={(value) =>
+            selected !== null
               ? dispatch({
                   type: TodoActions.UPDATE_TODO,
                   payload: value,
-                  id: state.selected.id
+                  id: selected.id,
                 })
               : dispatch({ type: TodoActions.ADD_TODO, payload: value })
           }

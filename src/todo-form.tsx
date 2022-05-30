@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-interface ITodoForm {
+interface ITodoFormProps {
   value: string | null;
   onSubmit(value: string): void;
 }
 
-export default function TodoForm(props: ITodoForm) {
+export const TodoForm = (props: ITodoFormProps) => {
   const [value, setValue] = useState(props.value === null ? "" : props.value);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -29,4 +29,4 @@ export default function TodoForm(props: ITodoForm) {
       </div>
     </form>
   );
-}
+};
