@@ -1,6 +1,5 @@
-import * as React from "react";
 import produce from "immer";
-import { v4 as uuid } from "uuid";
+import cuid from "cuid";
 
 export interface TodoItem {
   completed: boolean;
@@ -34,13 +33,13 @@ export enum TodoActions {
 
 export const INITIAL_LIST: TodoItem[] = [
   {
-    id: uuid(),
+    id: cuid(),
     completed: false,
     task: "get lunch",
     editing: false
   },
   {
-    id: uuid(),
+    id: cuid(),
     completed: false,
     task: "Check Flight",
     editing: false
@@ -80,7 +79,7 @@ export const reducer: React.Reducer<ITodoListState, Action> = produce(
         if (action.payload.length > 0) {
           draft.todos.unshift({
             task: action.payload,
-            id: uuid(),
+            id: cuid(),
             completed: false,
             editing: false
           });

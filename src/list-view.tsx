@@ -1,6 +1,5 @@
-import * as React from "react";
+import { useReducer, useMemo } from "react"
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
-
 import { Dialog } from "@reach/dialog";
 import ListItem from "./list-item";
 import TodoForm from "./todo-form";
@@ -52,15 +51,15 @@ function List({ todos, dispatch }: IListProps) {
 }
 
 export const ListView: React.FC = function() {
-  const [state, dispatch] = React.useReducer(reducer, {
+  const [state, dispatch] = useReducer(reducer, {
     modalOpen: false,
     selected: null,
     currentFilter: "All",
     todos: INITIAL_LIST
   });
 
-  const completed = React.useMemo(() => state.todos.filter(todo => todo.completed), [state]);
-  const incompleted = React.useMemo(() => state.todos.filter(todo => !todo.completed), [
+  const completed = useMemo(() => state.todos.filter(todo => todo.completed), [state]);
+  const incompleted = useMemo(() => state.todos.filter(todo => !todo.completed), [
     state
   ]);
 
@@ -87,6 +86,7 @@ export const ListView: React.FC = function() {
       </Tabs>
 
       <Dialog
+        aria-label={state.selected ? "Edit Todo Form" : "Create New Todo Form"}
         isOpen={state.modalOpen}
         onDismiss={() =>
           dispatch({

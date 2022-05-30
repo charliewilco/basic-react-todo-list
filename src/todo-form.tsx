@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 
 interface ITodoForm {
   value: string | null;
@@ -6,7 +6,7 @@ interface ITodoForm {
 }
 
 export default function TodoForm(props: ITodoForm) {
-  const [value, setValue] = React.useState(props.value === null ? "" : props.value);
+  const [value, setValue] = useState(props.value === null ? "" : props.value);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
