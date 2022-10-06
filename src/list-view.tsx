@@ -1,7 +1,6 @@
-import { useReducer, useMemo } from "react";
-import { Tab } from '@headlessui/react'
+import { useReducer, useMemo, Fragment } from "react";
+import { Tab } from "@headlessui/react";
 
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs";
 import { Dialog } from "@reach/dialog";
 import { ListItem } from "./list-item";
 import { TodoForm } from "./todo-form";
@@ -13,12 +12,12 @@ interface IListProps {
 }
 
 const List = ({ todos, dispatch }: IListProps) => {
-	const handleEdit = (id: string) => dispatch({ type: TodoActions.EDIT_TODO, id });
-	const handleRemove = (id: string) => dispatch({ type: TodoActions.REMOVE_TODO, id });
-	const handleUpdate = (id: string, task: string) =>
+	const handleEdit = (id: number) => dispatch({ type: TodoActions.EDIT_TODO, id });
+	const handleRemove = (id: number) => dispatch({ type: TodoActions.REMOVE_TODO, id });
+	const handleUpdate = (id: number, task: string) =>
 		dispatch({ type: TodoActions.UPDATE_TODO, id, payload: task });
-	const handleUndo = (id: string) => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id });
-	const handleCompleted = (id: string) =>
+	const handleUndo = (id: number) => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id });
+	const handleCompleted = (id: number) =>
 		dispatch({ type: TodoActions.MARK_AS_COMPLETED, id });
 	return (
 		<div>
@@ -70,25 +69,46 @@ export const ListView = () => {
 
 	return (
 		<>
-			<Tabs>
-				<TabList className="Filters">
-					<Tab>All</Tab>
-					<Tab>Completed</Tab>
-					<Tab>Todo</Tab>
-				</TabList>
-
-				<TabPanels>
-					<TabPanel>
+			<Tab.Group>
+				<Tab.List>
+					<Tab as={Fragment}>
+						{({ selected }) => (
+							/* Use the `selected` state to conditionally style the selected tab. */
+							<button className={selected ? "bg-blue-500 text-white" : "bg-white text-black"}>
+								All
+							</button>
+						)}
+					</Tab>
+					<Tab as={Fragment}>
+						{({ selected }) => (
+							/* Use the `selected` state to conditionally style the selected tab. */
+							<button className={selected ? "bg-blue-500 text-white" : "bg-white text-black"}>
+								Completed
+							</button>
+						)}
+					</Tab>
+					<Tab as={Fragment}>
+						{({ selected }) => (
+							/* Use the `selected` state to conditionally style the selected tab. */
+							<button className={selected ? "bg-blue-500 text-white" : "bg-white text-black"}>
+								Todo
+							</button>
+						)}
+					</Tab>
+				</Tab.List>
+				<Tab.Panels>
+					<Tab.Panel>
+						{" "}
 						<List dispatch={dispatch} todos={todos} />
-					</TabPanel>
-					<TabPanel>
+					</Tab.Panel>
+					<Tab.Panel>
 						<List dispatch={dispatch} todos={completed} />
-					</TabPanel>
-					<TabPanel>
+					</Tab.Panel>
+					<Tab.Panel>
 						<List dispatch={dispatch} todos={incompleted} />
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
+					</Tab.Panel>
+				</Tab.Panels>
+			</Tab.Group>
 
 			<Dialog
 				aria-label={selected ? "Edit Todo Form" : "Create New Todo Form"}

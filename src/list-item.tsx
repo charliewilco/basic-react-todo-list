@@ -4,16 +4,16 @@ import { FiEdit3, FiCheckCircle, FiTrash2 } from "react-icons/fi";
 
 interface ListItemProps {
 	todo: TodoItem;
-	onCompleted(id: string): void;
-	onUndo(id: string): void;
-	onUpdate(id: string, task: string): void;
-	onEdit(id: string): void;
-	onRemove(id: string): void;
+	onCompleted(id: number): void;
+	onUndo(id: number): void;
+	onUpdate(id: number, task: string): void;
+	onEdit(id: number): void;
+	onRemove(id: number): void;
 }
 
 interface EditProps {
 	item: TodoItem;
-	onUpdate: (id: string, task: string) => void;
+	onUpdate: (id: number, task: string) => void;
 }
 
 export const EditItem = (props: EditProps) => {
