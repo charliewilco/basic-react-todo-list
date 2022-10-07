@@ -10,10 +10,10 @@ export interface TodoItem {
 
 export type Filters = "All" | "Completed" | "Todo";
 
-interface TodoListState {
+export interface TodoListState {
 	todos: TodoItem[];
 	currentFilter: Filters;
-	modalOpen: boolean;
+	isModalOpen: boolean;
 	selected: null | {
 		task: string;
 		id: number;
@@ -85,7 +85,7 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 					editing: false,
 				});
 			}
-			draft.modalOpen = false;
+			draft.isModalOpen = false;
 			break;
 		}
 		case TodoActions.UPDATE_TODO: {
@@ -97,7 +97,7 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 				task: action.payload,
 			};
 			draft.selected = null;
-			draft.modalOpen = false;
+			draft.isModalOpen = false;
 			break;
 		}
 		case TodoActions.REMOVE_TODO: {
@@ -108,9 +108,10 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.EDIT_TODO: {
+			console.log(action);
 			const index = draft.todos.findIndex((element) => element.id === action.id);
 
-			draft.modalOpen = true;
+			draft.isModalOpen = true;
 			draft.todos[index] = {
 				...draft.todos[index],
 				editing: true,
@@ -144,14 +145,14 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.DISMISS_MODAL: {
-			draft.modalOpen = false;
+			draft.isModalOpen = false;
 			draft.selected = null;
 
 			break;
 		}
 
 		case TodoActions.OPEN_MODAL: {
-			draft.modalOpen = true;
+			draft.isModalOpen = true;
 			break;
 		}
 	}
