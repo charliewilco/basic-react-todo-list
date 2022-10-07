@@ -29,14 +29,14 @@ export function TodoForm() {
 				</Dialog.Title>
 				<button
 					aria-label="Submit"
-					className="text-sky-500 disabled:opacity-75 font-bold"
+					className="text-indigo-500 disabled:opacity-75 font-bold"
 					type="submit"
 					disabled={_value.length === 0}>
 					Submit
 				</button>
 			</header>
 			<div className="p-4">
-				<div className="rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-sky-600 focus-within:ring-1 focus-within:ring-sky-600">
+				<div className="rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600">
 					<label
 						htmlFor="name"
 						className="block text-xs font-medium text-gray-900 dark:text-white">
