@@ -4,8 +4,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
-import { ListView } from "../list-view";
-import { Provider } from "../context";
+import { App } from "../app";
 
 const IntersectionObserverMock = vi.fn(() => ({
 	disconnect: vi.fn(),
@@ -18,21 +17,13 @@ vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
 
 describe("Todo List", () => {
 	test("setup", async () => {
-		render(
-			<Provider>
-				<ListView />
-			</Provider>
-		);
+		render(<App />);
 
 		expect(screen.queryAllByRole("listitem")).toHaveLength(2);
 	});
 
 	test("add todo", async () => {
-		render(
-			<Provider>
-				<ListView />
-			</Provider>
-		);
+		render(<App />);
 
 		await userEvent.click(screen.getByLabelText("Add New"));
 
@@ -47,11 +38,7 @@ describe("Todo List", () => {
 	});
 
 	test("remove todo", async () => {
-		render(
-			<Provider>
-				<ListView />
-			</Provider>
-		);
+		render(<App />);
 
 		await userEvent.click(screen.queryAllByLabelText("Remove Todo")[0]);
 
