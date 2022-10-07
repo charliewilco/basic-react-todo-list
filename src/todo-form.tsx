@@ -1,17 +1,15 @@
 import { Dialog } from "@headlessui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TodoContext } from "./context";
 
-interface TodoFormProps {
-	title?: string;
-	value: string | null;
-	onSubmit(value: string): void;
-}
-
-export const TodoForm = ({ value, title, onSubmit }: TodoFormProps) => {
-	const [_value, setValue] = useState(value === null ? "" : value);
+export function TodoForm() {
+	const [{ selected }, { onSubmit }] = useContext(TodoContext);
+	const [_value, setValue] = useState(selected === null ? "" : selected.task);
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(event.target.value);
 	};
+
+	const title = selected ? "Edit Todo" : "Add Todo";
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -57,4 +55,4 @@ export const TodoForm = ({ value, title, onSubmit }: TodoFormProps) => {
 			</div>
 		</form>
 	);
-};
+}
