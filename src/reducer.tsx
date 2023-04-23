@@ -48,10 +48,6 @@ export const INITIAL_LIST: TodoItem[] = [
 	},
 ];
 
-export const GLOBAL_TODOS = {
-	todos: [...INITIAL_LIST],
-};
-
 export type Action =
 	| {
 			type: TodoActions.ADD_TODO;
@@ -89,7 +85,7 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.UPDATE_TODO: {
-			const index = draft.todos.findIndex((element) => element.id === action.id);
+			let index = draft.todos.findIndex((element) => element.id === action.id);
 
 			draft.todos[index] = {
 				...draft.todos[index],
@@ -101,14 +97,14 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.REMOVE_TODO: {
-			const index = draft.todos.findIndex((element) => element.id === action.id);
+			let index = draft.todos.findIndex((element) => element.id === action.id);
 
 			draft.todos.splice(index, 1);
 
 			break;
 		}
 		case TodoActions.EDIT_TODO: {
-			const index = draft.todos.findIndex((element) => element.id === action.id);
+			let index = draft.todos.findIndex((element) => element.id === action.id);
 
 			draft.isModalOpen = true;
 			draft.todos[index] = {
@@ -124,7 +120,7 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.MARK_AS_NOT_COMPLETED: {
-			const index = draft.todos.findIndex((element) => element.id === action.id);
+			let index = draft.todos.findIndex((element) => element.id === action.id);
 
 			draft.todos[index] = {
 				...draft.todos[index],
@@ -134,7 +130,7 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.MARK_AS_COMPLETED: {
-			const index = draft.todos.findIndex((element) => element.id === action.id);
+			let index = draft.todos.findIndex((element) => element.id === action.id);
 
 			draft.todos[index] = {
 				...draft.todos[index],

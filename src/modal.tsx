@@ -22,10 +22,10 @@ interface ModalProps {
 }
 
 export function Modal({ children }: ModalProps) {
-	const [{ isModalOpen }, { onDismissModal }] = useContext(TodoContext);
+	let [{ isModalOpen }, actions] = useContext(TodoContext);
 	return (
 		<Transition appear show={isModalOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-10" onClose={onDismissModal}>
+			<Dialog as="div" className="relative z-10" onClose={actions.onDismissModal}>
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-300"

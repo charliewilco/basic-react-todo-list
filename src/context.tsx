@@ -1,14 +1,8 @@
-import { createContext, createElement, useReducer } from "react";
+import { createContext, useReducer } from "react";
 
-import {
-	reducer,
-	INITIAL_LIST,
-	type Action,
-	type TodoListState,
-	TodoActions,
-} from "./reducer";
+import { reducer, INITIAL_LIST, type TodoListState, TodoActions } from "./reducer";
 
-const initialState: TodoListState = {
+let initialState: TodoListState = {
 	isModalOpen: false,
 	selected: null,
 	currentFilter: "All",
@@ -31,29 +25,28 @@ export const TodoContext = createContext<[TodoListState, TodoHandlers]>([
 		onRemove() {},
 		onUndo() {},
 		onEdit() {},
-		onCompleted(id) {},
+		onCompleted(_id: number) {},
 		onOpenModal() {},
 		onDismissModal() {},
-		onSubmit(value: string) {},
+		onSubmit(_value: string) {},
 	},
 ]);
 
 export function Provider({ children }: { children?: React.ReactNode }) {
-	const [state, dispatch] = useReducer(reducer, initialState);
+	let [state, dispatch] = useReducer(reducer, initialState);
 
-	const handleEdit = (id: number) => dispatch({ type: TodoActions.EDIT_TODO, id });
-	const handleRemove = (id: number) => dispatch({ type: TodoActions.REMOVE_TODO, id });
-	const handleUndo = (id: number) => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id });
-	const handleCompleted = (id: number) =>
-		dispatch({ type: TodoActions.MARK_AS_COMPLETED, id });
-	const handleDismiss = () =>
+	let handleEdit = (id: number) => dispatch({ type: TodoActions.EDIT_TODO, id });
+	let handleRemove = (id: number) => dispatch({ type: TodoActions.REMOVE_TODO, id });
+	let handleUndo = (id: number) => dispatch({ type: TodoActions.MARK_AS_NOT_COMPLETED, id });
+	let handleCompleted = (id: number) => dispatch({ type: TodoActions.MARK_AS_COMPLETED, id });
+	let handleDismiss = () =>
 		dispatch({
 			type: TodoActions.DISMISS_MODAL,
 		});
 
-	const handleOpen = () => dispatch({ type: TodoActions.OPEN_MODAL });
+	let handleOpen = () => dispatch({ type: TodoActions.OPEN_MODAL });
 
-	const handleSubmit = (value: string) => {
+	let handleSubmit = (value: string) => {
 		state.selected !== null
 			? dispatch({
 					type: TodoActions.UPDATE_TODO,
@@ -63,7 +56,7 @@ export function Provider({ children }: { children?: React.ReactNode }) {
 			: dispatch({ type: TodoActions.ADD_TODO, payload: value });
 	};
 
-	const handlers: TodoHandlers = {
+	let actionHandlers: TodoHandlers = {
 		onEdit: handleEdit,
 		onUndo: handleUndo,
 		onRemove: handleRemove,
@@ -73,11 +66,7 @@ export function Provider({ children }: { children?: React.ReactNode }) {
 		onSubmit: handleSubmit,
 	};
 
-	return createElement(
-		TodoContext.Provider,
-		{
-			value: [state, handlers],
-		},
-		children
+	return (
+		<TodoContext.Provider value={[state, actionHandlers]}>{children}</TodoContext.Provider>
 	);
 }

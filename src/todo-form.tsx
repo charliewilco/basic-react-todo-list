@@ -3,18 +3,16 @@ import { useContext, useState } from "react";
 import { TodoContext } from "./context";
 
 export function TodoForm() {
-	const [{ selected }, { onSubmit }] = useContext(TodoContext);
-	const [_value, setValue] = useState(selected === null ? "" : selected.task);
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	let [{ selected }, actions] = useContext(TodoContext);
+	let [_value, setValue] = useState(selected === null ? "" : selected.task);
+	let handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(event.target.value);
 	};
 
-	const title = selected ? "Edit Todo" : "Add Todo";
-
-	const handleSubmit = (event: React.FormEvent) => {
+	let handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
 
-		onSubmit(_value);
+		actions.onSubmit(_value);
 
 		setValue("");
 	};
@@ -25,7 +23,7 @@ export function TodoForm() {
 				<Dialog.Title
 					as="h3"
 					className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-					{title}
+					{selected ? "Edit Todo" : "Add Todo"}
 				</Dialog.Title>
 				<button
 					aria-label="Submit"

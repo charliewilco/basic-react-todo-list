@@ -25,10 +25,10 @@ export function TabButton({ children }: { children?: React.ReactNode }) {
 }
 
 export function TabDemo() {
-	const [{ todos }, { onOpenModal }] = useContext(TodoContext);
+	let [{ todos }, actions] = useContext(TodoContext);
 
-	const completed = useMemo(() => todos.filter((todo) => todo.completed), [todos]);
-	const incompleted = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
+	let completed = useMemo(() => todos.filter((todo) => todo.completed), [todos]);
+	let incompleted = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
 
 	return (
 		<div className="w-full">
@@ -38,7 +38,7 @@ export function TabDemo() {
 					aria-label="Tasks">
 					<span>🚀📋✨</span>
 				</h1>
-				<ModalButton aria-label="Add New" onClick={onOpenModal}>
+				<ModalButton aria-label="Add New" onClick={actions.onOpenModal}>
 					<FiPlus />
 				</ModalButton>
 			</header>

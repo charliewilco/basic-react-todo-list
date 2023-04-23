@@ -3,24 +3,25 @@ import { describe, test, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-
 import { App } from "../app";
 
-const IntersectionObserverMock = vi.fn(() => ({
-	disconnect: vi.fn(),
-	observe: vi.fn(),
-	takeRecords: vi.fn(),
-	unobserve: vi.fn(),
-}));
-
-const ResizeObserverMock = vi.fn(() => ({
-	observe: vi.fn(),
-	unobserve: vi.fn(),
-	disconnect: vi.fn(),
-}));
-
-vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
-vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+vi.stubGlobal(
+	"IntersectionObserver",
+	vi.fn(() => ({
+		disconnect: vi.fn(),
+		observe: vi.fn(),
+		takeRecords: vi.fn(),
+		unobserve: vi.fn(),
+	}))
+);
+vi.stubGlobal(
+	"ResizeObserver",
+	vi.fn(() => ({
+		observe: vi.fn(),
+		unobserve: vi.fn(),
+		disconnect: vi.fn(),
+	}))
+);
 
 describe("Todo List", () => {
 	test("setup", async () => {
@@ -35,7 +36,7 @@ describe("Todo List", () => {
 		await userEvent.click(screen.getByLabelText("Add New"));
 
 		expect(screen.getByRole("dialog")).toBeInTheDocument();
-		const input = screen.getByRole("textbox");
+		let input = screen.getByRole("textbox");
 		await userEvent.type(input, "Eat a snack");
 
 		await userEvent.click(screen.getByLabelText("Submit"));

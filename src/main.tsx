@@ -4,7 +4,7 @@ import { App } from "./app";
 
 import "./index.css";
 
-const root = document.getElementById("root");
+let root = document.getElementById("root");
 
 if (root !== null) {
 	ReactDOM.createRoot(root).render(
