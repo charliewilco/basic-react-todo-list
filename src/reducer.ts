@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 // import produce from 'https://cdn.skypack.dev/immer';
 
 export interface TodoItem {
@@ -108,7 +108,6 @@ export const reducer = produce((draft: TodoListState, action: Action) => {
 			break;
 		}
 		case TodoActions.EDIT_TODO: {
-			console.log(action);
 			const index = draft.todos.findIndex((element) => element.id === action.id);
 
 			draft.isModalOpen = true;
