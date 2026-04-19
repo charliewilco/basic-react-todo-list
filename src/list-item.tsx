@@ -1,60 +1,72 @@
-import { TodoItem } from "./reducer";
-import { FiEdit3, FiCheckCircle, FiTrash2 } from "react-icons/fi";
-import { classNames } from "./classnames";
-import { TodoContext } from "./context";
 import { useCallback, useContext } from "react";
+import { FiCheckCircle, FiEdit3, FiTrash2 } from "react-icons/fi";
+
+import { TodoContext } from "./context";
+import type { TodoItem } from "./todo-store";
 
 interface ListItemProps {
+	isMutating: boolean;
+	onCompleted(id: number): void;
+	onRemove(id: number): void;
+	onUndo(id: number): void;
 	todo: TodoItem;
 }
 
-export function ListItem(props: ListItemProps) {
-	const [, { onEdit, onCompleted, onRemove, onUndo }] = useContext(TodoContext);
-	const handleEdit = useCallback(() => onEdit(props.todo.id), [onEdit, props.todo.id]);
-	const handleRemove = useCallback(() => onRemove(props.todo.id), [onRemove, props.todo.id]);
-	const handleUndo = useCallback(() => onUndo(props.todo.id), [onUndo, props.todo.id]);
-	const handleCompleted = useCallback(
-		() => onCompleted(props.todo.id),
-		[onCompleted, props.todo.id]
-	);
+export function ListItem({ isMutating, onCompleted, onRemove, onUndo, todo }: ListItemProps) {
+	const [, { onEdit }] = useContext(TodoContext);
+	const handleEdit = useCallback(() => onEdit(todo.id), [onEdit, todo.id]);
+	const handleRemove = useCallback(() => onRemove(todo.id), [onRemove, todo.id]);
+	const handleUndo = useCallback(() => onUndo(todo.id), [onUndo, todo.id]);
+	const handleCompleted = useCallback(() => onCompleted(todo.id), [onCompleted, todo.id]);
 
 	const handleClick = useCallback(() => {
-		if (props.todo.completed) {
+		if (todo.completed) {
 			return handleUndo();
-		} else {
-			return handleCompleted();
 		}
-	}, [props.todo.completed, handleUndo, handleCompleted]);
+
+		return handleCompleted();
+	}, [handleCompleted, handleUndo, todo.completed]);
 
 	return (
-		<li className="py-4 px-2 dark:text-white">
-			<div className="flex">
+		<li className="todo-item">
+			<div className="todo-item__content">
 				<button
-					className={classNames("flex-0 mr-2", props.todo.completed ? "text-green-400" : "")}
+					className={`icon-button icon-button--status${
+						todo.completed ? " icon-button--completed" : ""
+					}`}
+					disabled={isMutating}
 					onClick={handleClick}>
 					<FiCheckCircle size={18} />
 				</button>
 
-				<div className="flex-1 flex justify-between">
-					<div>
-						{props.todo.completed ? (
-							<span>
-								<b className="text-green-400 mb-2">Completed!</b>{" "}
-								<span className="line-through italic">{props.todo.task}</span>
+				<div className="todo-item__details">
+					<div className="todo-item__copy">
+						<span
+							className={`todo-item__task${todo.completed ? " todo-item__task--completed" : ""}`}>
+							{todo.task}
+						</span>
+						{todo.completed ? (
+							<span className="todo-item__meta">
+								<span className="todo-item__status">Completed!</span> 
 							</span>
 						) : (
-							<span>{props.todo.task}</span>
+							<span className="todo-item__meta">Ready when you are</span>
 						)}
 					</div>
 
-					<div>
-						<button onClick={handleRemove} className="mr-2" aria-label="Remove Todo">
+					<div className="todo-item__actions">
+						<button
+							aria-label="Remove Todo"
+							className="icon-button"
+							disabled={isMutating}
+							onClick={handleRemove}>
 							<FiTrash2 size={18} />
 						</button>
 						<button
-							disabled={props.todo.completed}
-							onClick={handleEdit}
-							aria-label="Edit Todo">
+							aria-label="Edit Todo"
+							className="icon-button"
+							disabled={todo.completed || isMutating}
+							onClick={handleEdit}>
 							<FiEdit3 size={18} />
 						</button>
 					</div>

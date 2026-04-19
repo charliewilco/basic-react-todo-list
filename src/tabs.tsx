@@ -1,66 +1,107 @@
-import { useContext, useMemo } from "react";
-import { Tab } from "@headlessui/react";
+import { useId, useRef, useState } from "react";
 
-import { List } from "./list";
-import { classNames } from "./classnames";
-import { TodoContext } from "./context";
-import { ModalButton } from "./modal";
-import { FiPlus } from "react-icons/fi";
-
-export function TabButton({ children }: { children?: React.ReactNode }) {
-	return (
-		<Tab
-			className={({ selected }) =>
-				classNames(
-					"w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 dark:text-white",
-					"ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-					selected
-						? "bg-white dark:bg-zinc-900 shadow"
-						: "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-				)
-			}>
-			{children}
-		</Tab>
-	);
+/** A single tab label and its rendered panel content. */
+export interface TabsItem {
+	content: React.ReactNode;
+	label: string;
 }
 
-export function TabDemo() {
-	const [{ todos }, { onOpenModal }] = useContext(TodoContext);
+/**
+ * Renders an accessible tab list with keyboard navigation.
+ *
+ * @param props.items Tab metadata and panel content.
+ * @param props.label Accessible label for the tab list.
+ * @returns A controlled tab interface scoped to the provided items.
+ */
+export function Tabs({ items, label }: { items: TabsItem[]; label: string }) {
+	const tabsId = useId();
+	const [selectedIndex, setSelectedIndex] = useState(0);
+	const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-	const completed = useMemo(() => todos.filter((todo) => todo.completed), [todos]);
-	const incompleted = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);
+	const focusTab = (index: number) => {
+		setSelectedIndex(index);
+		tabRefs.current[index]?.focus();
+	};
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+		switch (event.key) {
+			case "ArrowRight":
+			case "ArrowDown": {
+				event.preventDefault();
+				focusTab((index + 1) % items.length);
+				break;
+			}
+			case "ArrowLeft":
+			case "ArrowUp": {
+				event.preventDefault();
+				focusTab((index - 1 + items.length) % items.length);
+				break;
+			}
+			case "Home": {
+				event.preventDefault();
+				focusTab(0);
+				break;
+			}
+			case "End": {
+				event.preventDefault();
+				focusTab(items.length - 1);
+				break;
+			}
+		}
+	};
 
 	return (
-		<div className="w-full">
-			<header className="flex items-center justify-between mb-4">
-				<h1
-					className="w-full dark:text-white tracking-tight font-semibold text-3xl"
-					aria-label="Tasks">
-					<span>🚀📋✨</span>
-				</h1>
-				<ModalButton aria-label="Add New" onClick={onOpenModal}>
-					<FiPlus />
-				</ModalButton>
-			</header>
+		<div>
+			<div
+				aria-label={label}
+				aria-orientation="horizontal"
+				className="tab-list"
+				role="tablist">
+				{items.map((item, index) => {
+					const isSelected = index === selectedIndex;
+					const tabId = `${tabsId}-tab-${index}`;
+					const panelId = `${tabsId}-panel-${index}`;
 
-			<Tab.Group>
-				<Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 dark:bg-zinc-100/20 p-1">
-					<TabButton>All</TabButton>
-					<TabButton>Completed</TabButton>
-					<TabButton>Todo</TabButton>
-				</Tab.List>
-				<Tab.Panels className="mt-2">
-					<Tab.Panel>
-						<List todos={todos} />
-					</Tab.Panel>
-					<Tab.Panel>
-						<List todos={completed} />
-					</Tab.Panel>
-					<Tab.Panel>
-						<List todos={incompleted} />
-					</Tab.Panel>
-				</Tab.Panels>
-			</Tab.Group>
+					return (
+						<button
+							key={item.label}
+							ref={(element) => {
+								tabRefs.current[index] = element;
+							}}
+							aria-controls={panelId}
+							aria-selected={isSelected}
+							className={`tab-button${isSelected ? " tab-button--selected" : ""}`}
+							id={tabId}
+							onClick={() => setSelectedIndex(index)}
+							onKeyDown={(event) => handleKeyDown(event, index)}
+							role="tab"
+							tabIndex={isSelected ? 0 : -1}
+							type="button">
+							{item.label}
+						</button>
+					);
+				})}
+			</div>
+			<div className="tab-panels">
+				{items.map((item, index) => {
+					const isSelected = index === selectedIndex;
+					const tabId = `${tabsId}-tab-${index}`;
+					const panelId = `${tabsId}-panel-${index}`;
+
+					return (
+						<div
+							key={item.label}
+							aria-labelledby={tabId}
+							className="tab-panel"
+							hidden={!isSelected}
+							id={panelId}
+							role="tabpanel"
+							tabIndex={isSelected ? 0 : -1}>
+							{item.content}
+						</div>
+					);
+				})}
+			</div>
 		</div>
 	);
 }

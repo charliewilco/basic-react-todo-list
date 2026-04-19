@@ -1,23 +1,42 @@
-import { classNames } from "./classnames";
 import { ListItem } from "./list-item";
-import type { TodoItem } from "./reducer";
+import type { TodoItem } from "./todo-store";
 
-export function List({ todos }: { todos: TodoItem[] }) {
-	const className = classNames(
-		"bg-white dark:bg-zinc-900 divide-y dark:divide-zinc-700 rounded-xl overflow-hidden",
-		"ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-	);
+export function List({
+	emptyMessage = "No tasks here yet.",
+	emptyTitle = "Nothing to see here!",
+	isMutating = false,
+	onCompleted,
+	onRemove,
+	onUndo,
+	todos,
+}: {
+	emptyMessage?: string;
+	emptyTitle?: string;
+	isMutating?: boolean;
+	onCompleted(id: number): void;
+	onRemove(id: number): void;
+	onUndo(id: number): void;
+	todos: TodoItem[];
+}) {
 	return (
-		<div>
+		<div className="todo-list-wrapper" aria-busy={isMutating}>
 			{todos.length > 0 ? (
-				<ul className={className}>
-					{todos.map((t) => (
-						<ListItem key={t.id} todo={t} />
+				<ul className="todo-list">
+					{todos.map((todo) => (
+						<ListItem
+							isMutating={isMutating}
+							key={todo.id}
+							onCompleted={onCompleted}
+							onRemove={onRemove}
+							onUndo={onUndo}
+							todo={todo}
+						/>
 					))}
 				</ul>
 			) : (
-				<div className="py-8 text-center">
-					<h2 className="w-full dark:text-white text-xl">Nothing to see here!</h2>
+				<div className="empty-state">
+					<h2 className="empty-state__title">{emptyTitle}</h2>
+					<p className="empty-state__copy">{emptyMessage}</p>
 				</div>
 			)}
 		</div>

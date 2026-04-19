@@ -1,56 +1,88 @@
-import { Dialog } from "@headlessui/react";
-import { useContext, useState } from "react";
-import { TodoContext } from "./context";
+import { useActionState, useContext, useEffect, useState } from "react";
 
-export function TodoForm() {
-	const [{ selected }, { onSubmit }] = useContext(TodoContext);
-	const [_value, setValue] = useState(selected === null ? "" : selected.task);
+import { TodoContext } from "./context";
+import type { TodoItem } from "./todo-store";
+
+interface TodoFormProps {
+	isMutating: boolean;
+	onSubmit(value: string): Promise<void>;
+	selectedTodo: TodoItem | null;
+}
+
+export function TodoForm({ isMutating, onSubmit, selectedTodo }: TodoFormProps) {
+	const [{ isModalOpen }] = useContext(TodoContext);
+	const [value, setValue] = useState(selectedTodo === null ? "" : selectedTodo.task);
+	const [errorMessage, submitAction, isSubmitting] = useActionState(
+		async (_previousState: string | null, formData: FormData) => {
+			const nextValue = String(formData.get("name") ?? "").trim();
+
+			if (nextValue.length === 0) {
+				return "Name is required.";
+			}
+
+			try {
+				await onSubmit(nextValue);
+				return null;
+			} catch (error) {
+				return error instanceof Error ? error.message : "Could not save todo.";
+			}
+		},
+		null,
+	);
+
+	useEffect(() => {
+		if (!isModalOpen) {
+			setValue("");
+			return;
+		}
+
+		setValue(selectedTodo === null ? "" : selectedTodo.task);
+	}, [isModalOpen, selectedTodo]);
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(event.target.value);
 	};
 
-	const title = selected ? "Edit Todo" : "Add Todo";
-
-	const handleSubmit = (event: React.FormEvent) => {
-		event.preventDefault();
-
-		onSubmit(_value);
-
-		setValue("");
-	};
+	const title = selectedTodo ? "Edit Todo" : "Add Todo";
+	const isPending = isSubmitting || isMutating;
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<header className="flex justify-between p-4">
-				<Dialog.Title
-					as="h3"
-					className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-					{title}
-				</Dialog.Title>
+		<form className="todo-form" action={submitAction}>
+			<header className="todo-form__header">
+				<div>
+					<p className="todo-form__eyebrow">Quick Entry</p>
+					<h2 id="todo-form-title" className="todo-form__title">
+						{title}
+					</h2>
+				</div>
 				<button
 					aria-label="Submit"
-					className="text-indigo-500 disabled:opacity-75 font-bold"
+					className="todo-form__submit"
 					type="submit"
-					disabled={_value.length === 0}>
-					Submit
+					disabled={value.trim().length === 0 || isPending}>
+					Save
 				</button>
 			</header>
-			<div className="p-4">
-				<div className="rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600">
-					<label
-						htmlFor="name"
-						className="block text-xs font-medium text-gray-900 dark:text-white">
-						Name
+			<div className="todo-form__body">
+				<div className="todo-form__field">
+					<label htmlFor="name" className="todo-form__label">
+						Title
 					</label>
 					<input
-						type="text"
-						name="name"
+						autoFocus
+						className="todo-form__input"
 						id="name"
-						value={_value}
+						name="name"
 						onChange={handleChange}
-						className="block w-full border-0 p-0 text-gray-900 dark:bg-zinc-900 dark:text-white placeholder-gray-500 focus:ring-0 sm:text-sm"
-						placeholder="Drink some water"
+						placeholder="Draft release notes"
+						type="text"
+						value={value}
 					/>
+					{errorMessage ? (
+						<p className="todo-form__error" role="alert">
+							{errorMessage}
+						</p>
+					) : null}
 				</div>
 			</div>
 		</form>
