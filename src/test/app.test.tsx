@@ -89,7 +89,7 @@ describe("Todo List", () => {
 
 		await screen.findAllByRole("listitem");
 
-		const [inboxTab, todayTab, logbookTab] = screen.getAllByRole("tab");
+		const [inboxTab, todayTab, completedTab] = screen.getAllByRole("tab");
 
 		expect(todayTab).toHaveAttribute("aria-selected", "true");
 		expect(screen.getAllByRole("listitem")).toHaveLength(2);
@@ -103,8 +103,8 @@ describe("Todo List", () => {
 
 		await userEvent.keyboard("{End}");
 
-		expect(logbookTab).toHaveFocus();
-		expect(logbookTab).toHaveAttribute("aria-selected", "true");
+		expect(completedTab).toHaveFocus();
+		expect(completedTab).toHaveAttribute("aria-selected", "true");
 		expect(screen.queryAllByRole("listitem")).toHaveLength(0);
 	});
 });
