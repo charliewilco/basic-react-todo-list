@@ -34,7 +34,7 @@
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
-	"packageManager": "npm@11.5.1",
+	"packageManager": "npm@11.11.0",
 	"engines": {
 		"node": ">=24"
 	},
